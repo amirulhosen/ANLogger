@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/logger_navigation"
+    app:startDestination="@id/logListFragment">
+
+    <fragment
+        android:id="@+id/logListFragment"
+        android:name="com.networklogger.LogListFragment"
+        android:label="fragment_intro"
+        tools:layout="@layout/custom_log_list_fragment">
+
+        <action
+            android:id="@+id/actionContactInfo"
+            app:destination="@+id/logDetailsFragment"
+            app:enterAnim="@anim/logger_slide_in_right"
+            app:exitAnim="@anim/logger_slide_out_left"
+            app:popEnterAnim="@anim/logger_slide_in_left"
+            app:popExitAnim="@anim/logger_slide_out_right" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/logDetailsFragment"
+        android:name="com.networklogger.LogDetailViewFragment"
+        android:label="fragment_intro"
+        tools:layout="@layout/custom_log_detail_view_dialog">
+
+    </fragment>
+</navigation>
