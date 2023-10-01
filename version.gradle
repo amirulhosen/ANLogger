@@ -1,0 +1,174 @@
+ext.kotlin_version = '1.5.0'
+ext.nav_version = '2.3.5'
+ext.ktlint_version = '10.2.1'
+ext.detekt_version = "1.9.1"
+
+ext {
+    appCompatDependencies = [
+            appcompat: "androidx.appcompat:appcompat:1.2.0"
+    ]
+
+    biometricDependencies = [
+            biometric: "androidx.biometric:biometric:1.1.0"
+    ]
+
+    constraintLayoutDependencies = [
+            constraintlayout: "androidx.constraintlayout:constraintlayout:2.0.4"
+    ]
+
+    coreDependencies = [
+            core: "androidx.core:core-ktx:1.3.2"
+    ]
+
+    lifecycleDependencies = [
+            lifecycleViewmodelKtx: "androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1",
+            lifecycleKtx: "androidx.lifecycle:lifecycle-livedata-ktx:2.4.1"
+    ]
+
+    activityDependencies = [
+            activityKtx: "androidx.activity:activity-ktx:1.2.3"
+    ]
+
+    fragmentDependencies = [
+            fragmentKtx: "androidx.fragment:fragment-ktx:1.4.1"
+    ]
+
+    navigationDependencies = [
+            navigationFragmentKtx: "androidx.navigation:navigation-fragment-ktx:$nav_version",
+            navigationUiKtx      : "androidx.navigation:navigation-ui-ktx:$nav_version",
+            navigationExt      : "androidx.lifecycle:lifecycle-extensions:2.2.0",
+            navigationruntime      : "androidx.lifecycle:lifecycle-runtime-ktx:2.4.1"
+    ]
+
+    def pagingVersion = "3.0.0-alpha04"
+    pagingDependencies = [
+            pagingRuntimeKtx: "androidx.paging:paging-runtime-ktx:$pagingVersion",
+            pagingCommon    : "androidx.paging:paging-common:$pagingVersion"
+    ]
+
+    preferenceDependencies = [
+            preferenceKtx: "androidx.preference:preference-ktx:1.1.1"
+    ]
+
+    securityDependencies = [
+            seurityCrypto: "androidx.security:security-crypto:1.0.0"
+    ]
+
+    swipeRefreshLayoutDependencies = [
+            swiperefreshlayout: "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
+    ]
+
+    materialDependencies = [
+            material: "com.google.android.material:material:1.2.1"
+    ]
+
+    gsonDependencies = [
+            gson: "com.google.code.gson:gson:2.8.6"
+    ]
+
+    timberDependencies = [
+            timber: "com.jakewharton.timber:timber:4.7.1"
+    ]
+
+    def okHttpVersion = "4.9.1"
+    okHttpDependencies = [
+            loggingInterceptor : "com.squareup.okhttp3:logging-interceptor:$okHttpVersion",
+            okHttpUrlconnection: "com.squareup.okhttp3:okhttp-urlconnection:$okHttpVersion"
+    ]
+
+    def retrofitVersion = "2.9.0"
+    retrofitDependencies = [
+            retrofit     : "com.squareup.retrofit2:retrofit:$retrofitVersion",
+            converterGson: "com.squareup.retrofit2:converter-gson:$retrofitVersion"
+    ]
+
+    kotlinDependencies = [
+            kotlinStdlibJdk8: "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    ]
+
+    koinDependencies = [
+            koinAndroidViewModel: "io.insert-koin:koin-android:3.3.0"
+    ]
+
+    asyncLayoutInflatorDependencies = [
+            asynclayoutinflater: "androidx.asynclayoutinflater:asynclayoutinflater:1.0.0"
+    ]
+
+    localBroadcastManagerDependecies = [
+            localbroadcastmanager: "androidx.localbroadcastmanager:localbroadcastmanager:1.0.0"
+    ]
+
+    chuckerDependencies = [
+            library: "com.github.chuckerteam.chucker:library:3.5.2"
+    ]
+
+    coroutineDependencies = [
+            library: "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3"
+    ]
+
+    def apolloVersion = "2.5.6"
+
+    apolloDependencies = [
+            apolloRuntime          : "com.apollographql.apollo:apollo-runtime:$apolloVersion",
+            apolloCoroutinesSupport: "com.apollographql.apollo:apollo-coroutines-support:$apolloVersion"
+    ]
+
+    fireBaseDependencies = [
+            firebaseAnalyticsKtx  : "com.google.firebase:firebase-analytics-ktx",
+            firebaseCrashlyticsKtx: "com.google.firebase:firebase-crashlytics-ktx"
+    ]
+
+    gmsDependencies = [
+            playServicesAuth: "com.google.android.gms:play-services-auth:19.0.0"
+    ]
+
+    tagManagerDependencies = [
+            playServicesTagmanager: "com.google.android.gms:play-services-tagmanager:17.0.0"
+    ]
+
+    leakCanaryDependencies = [
+            leakcanary: "com.squareup.leakcanary:leakcanary-android:2.9.1"
+    ]
+
+    multidexDependencies = [
+            multidex: "com.android.support:multidex:1.0.3"
+    ]
+
+    def mockkVersion = "1.11.0"
+    def espressoVersion = "3.3.0"
+    def extJunitVersion = "1.1.2"
+    def testCoreVersion = "1.2.0"
+    def extTruthVersion = "1.3.0"
+    testDependencies = [
+            junit                : "junit:junit:4.13.2",
+            mockk                : "io.mockk:mockk:$mockkVersion",
+            espressoContrib      : "androidx.test.espresso:espresso-contrib:$espressoVersion",
+            espressoCore         : "androidx.test.espresso:espresso-core:$espressoVersion",
+            espressoWeb          : "androidx.test.espresso:espresso-web:$espressoVersion",
+            extJunitKtx          : "androidx.test.ext:junit-ktx:$extJunitVersion",
+            extJunit             : "androidx.test.ext:junit:$extJunitVersion",
+            extTruth             : "androidx.test.ext:truth:$extTruthVersion",
+            extCoreKtx           : "androidx.test:core-ktx:$testCoreVersion",
+            extCore              : "androidx.test:core:$testCoreVersion",
+            testRunner           : "androidx.test:runner:1.3.0",
+            archCoreTesting      : "androidx.arch.core:core-testing:2.1.0",
+            kotlinTestJunit      : "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version",
+            kotlinxCoroutinesTest: "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.4.3",
+            robolectric          : "org.robolectric:robolectric:4.5.1",
+            jsonTest             : "org.json:json:20180813"
+    ]
+
+    androidTestDependencies = [
+            mockkAndroid   : "io.mockk:mockk-android:$mockkVersion",
+            espressoCore   : "androidx.test.espresso:espresso-core:$espressoVersion",
+            espressoWeb    : "androidx.test.espresso:espresso-web:$espressoVersion",
+            extJunitKtx    : "androidx.test.ext:junit-ktx:$extJunitVersion",
+            extJunit       : "androidx.test.ext:junit:$extJunitVersion",
+            extTruth       : "androidx.test.ext:truth:$extTruthVersion",
+            extCoreKtx     : "androidx.test:core-ktx:$testCoreVersion",
+            extCore        : "androidx.test:core:$testCoreVersion",
+            testRules      : "androidx.test:rules:1.3.0",
+            testRunner     : "androidx.test:runner:1.3.0",
+            kotlinTestJunit: "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
+    ]
+}

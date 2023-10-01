@@ -1,0 +1,60 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+}
+
+apply from: '../version.gradle'
+android {
+    namespace 'com.lib.networklogger'
+    compileSdk 33
+
+    defaultConfig {
+        applicationId "com.lib.networklogger"
+        minSdk 29
+        targetSdk 33
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+}
+
+dependencies {
+
+    // debugImplementation because LeakCanary should only run in debug builds.
+    implementation appCompatDependencies.values()
+    implementation constraintLayoutDependencies.values()
+    implementation coreDependencies.values()
+//    implementation lifecycleDependencies.values()
+    implementation navigationDependencies.values()
+    implementation swipeRefreshLayoutDependencies.values()
+    implementation materialDependencies.values()
+    implementation gsonDependencies.values()
+    implementation timberDependencies.values()
+    implementation okHttpDependencies.values()
+    implementation retrofitDependencies.values()
+    implementation kotlinDependencies.values()
+    implementation koinDependencies.values()
+    implementation gmsDependencies.values()
+    implementation activityDependencies.values()
+    implementation fragmentDependencies.values()
+    implementation coroutineDependencies.values()
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.5.1"
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.0.0-RC1'
+    implementation project(path: ':networklogger')
+}
