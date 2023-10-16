@@ -103,7 +103,7 @@ class LogListFragment : Fragment() {
                 requireContext().startActivity(Intent.createChooser(intent, "Share using"))
             } else if (it.itemId == R.id.delete_menu) {
                 val deleteDialog = android.app.AlertDialog.Builder(context).run {
-                    setMessage("Are you sure want to delete")
+                    setMessage("Are you sure want to delete?")
                     setTitle("Confirm")
                     setCancelable(true)
                     setPositiveButton(

@@ -15,24 +15,21 @@
         android:layout_height="wrap_content"
         android:textSize="20sp"
         android:textStyle="bold"
-        android:layout_marginTop="@dimen/space_xxs"
-        android:layout_marginBottom="@dimen/space_xxs" />
+        android:layout_marginTop="@dimen/space_xxs" />
 
     <TextView
         android:id="@+id/logsItemSubtitlw"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="20sp"
-        android:layout_marginTop="@dimen/space_xxs"
-        android:layout_marginBottom="@dimen/space_xxs" />
+        android:layout_marginTop="@dimen/space_xxs" />
 
     <TextView
         android:id="@+id/timeStamp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="20sp"
-        android:layout_marginTop="@dimen/space_xxs"
-        android:layout_marginBottom="@dimen/space_xxs" />
+        android:layout_marginTop="@dimen/space_xxs" />
 
 
 
