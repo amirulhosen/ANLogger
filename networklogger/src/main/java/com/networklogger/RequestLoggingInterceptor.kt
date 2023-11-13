@@ -8,6 +8,7 @@ import android.content.Intent
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import androidx.core.app.NotificationCompat
+import androidx.preference.PreferenceManager
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
@@ -18,76 +19,84 @@ import org.json.JSONObject
 import java.io.*
 import java.text.DateFormat
 import java.text.SimpleDateFormat
+import java.util.Calendar
 
 
 class RequestLoggingInterceptor(val context: Context) : Interceptor {
     private lateinit var jsonObject1: JSONObject
     override fun intercept(chain: Interceptor.Chain): Response {
         val request: Request = chain.request()
-        val headers = request.headers.map { it.toList() }
-        val jsonObject = JSONObject().apply {
-            put("url", request.url)
-            put("request_header", request.headers)
-            put("request_body", stringifyRequestBody(request))
-            put("request_method", request.method)
-            put("request_method", request.headers)
-        }
+        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+        val overriddenBaseUrl = prefs.getString(
+            "endPoints",
+            null
+        )
+        return if (!request.url.pathSegments.contains(overriddenBaseUrl)) {
+            val jsonObject = JSONObject().apply {
+                put("url", request.url)
+                put("request_header", request.headers)
+                put("request_body", stringifyRequestBody(request))
+                put("request_method", request.method)
+                put("request_method", request.headers)
+            }
 
 
-        var response = chain.proceed(request)
-        val responseBody = response.body
-        if (responseBody != null) {
-            val responseBodyString = responseBody.string()
-            response = response.newBuilder()
-                .body(
-                    ResponseBody.create(
-                        responseBody.contentType(),
-                        responseBodyString.toByteArray()
+            var response = chain.proceed(request)
+            val responseBody = response.body
+            if (responseBody != null) {
+                val responseBodyString = responseBody.string()
+                response = response.newBuilder()
+                    .body(
+                        ResponseBody.create(
+                            responseBody.contentType(),
+                            responseBodyString.toByteArray()
+                        )
                     )
-                )
-                .build()
+                    .build()
 
-            val dateFormat: DateFormat = SimpleDateFormat("HH:mm:ss")
-            val requestFormatted: String = dateFormat.format(response.sentRequestAtMillis)
-            val responseFormatted: String = dateFormat.format(response.receivedResponseAtMillis)
+                val dateFormat: DateFormat = SimpleDateFormat("HH:mm:ss")
+                val requestFormatted: String = dateFormat.format(response.sentRequestAtMillis)
+                val responseFormatted: String = dateFormat.format(response.receivedResponseAtMillis)
 
-            jsonObject.put("response_body", responseBodyString)
-            jsonObject.put("status_code", response.code)
-            jsonObject.put("request_time", requestFormatted)
-            jsonObject.put("response_time", responseFormatted)
-            jsonObject.put("protocol", response.protocol)
-            jsonObject.put("is_ssl", response.request.isHttps)
-            jsonObject.put("resquest_size", request.body?.contentLength())
-            jsonObject.put("response_size", response.body?.contentLength())
-            jsonObject.put("tls_version", response.handshake?.tlsVersion)
-            jsonObject.put("cipher_suite", response.handshake?.cipherSuite)
-            jsonObject.put("cipher_suite", response.handshake?.cipherSuite)
-        }
-        jsonObject.put("response_header", response.headers)
-        showNotification(context, (response.code.toString()+request.url), request.method)
-        val file = File((context.getExternalFilesDir("")?.absolutePath ?: "") + "/network_logs")
-        val fileWriter = if (file.exists()) {
-            val data = loadDataFromFile()
-            val updatedJsonArray = data.getJSONArray("logs")
-            updatedJsonArray.put(jsonObject)
+                jsonObject.put("response_body", responseBodyString)
+                jsonObject.put("status_code", response.code)
+                jsonObject.put("request_time", requestFormatted)
+                jsonObject.put("response_time", responseFormatted)
+                jsonObject.put("protocol", response.protocol)
+                jsonObject.put("is_ssl", response.request.isHttps)
+                jsonObject.put("resquest_size", request.body?.contentLength())
+                jsonObject.put("response_size", response.body?.contentLength())
+                jsonObject.put("tls_version", response.handshake?.tlsVersion)
+                jsonObject.put("cipher_suite", response.handshake?.cipherSuite)
+                jsonObject.put("cipher_suite", response.handshake?.cipherSuite)
+            }
+            jsonObject.put("response_header", response.headers)
+            showNotification(context, (response.code.toString() + request.url), request.method)
+            val file = File((context.getExternalFilesDir("")?.absolutePath ?: "") + "/network_logs")
+            val fileWriter = if (file.exists()) {
+                val data = loadDataFromFile()
+                val updatedJsonArray = data.getJSONArray("logs")
+                updatedJsonArray.put(jsonObject)
 
-            jsonObject1 = JSONObject()
-            jsonObject1.put("logs", updatedJsonArray)
+                jsonObject1 = JSONObject()
+                jsonObject1.put("logs", updatedJsonArray)
 
-            FileWriter(file)
-        } else {
-            val jsonArray = JSONArray()
-            jsonArray.put(jsonObject)
-            jsonObject1 = JSONObject()
-            jsonObject1.put("logs", jsonArray)
-            FileWriter(file)
-        }
+                FileWriter(file)
+            } else {
+                val jsonArray = JSONArray()
+                jsonArray.put(jsonObject)
+                jsonObject1 = JSONObject()
+                jsonObject1.put("logs", jsonArray)
+                file.setLastModified(Calendar.getInstance().timeInMillis)
+                FileWriter(file)
+            }
 
-        val bufferedWriter = BufferedWriter(fileWriter)
-        bufferedWriter.write(jsonObject1.toString())
-        bufferedWriter.close()
-
-        return response
+            val bufferedWriter = BufferedWriter(fileWriter)
+            bufferedWriter.write(jsonObject1.toString())
+            bufferedWriter.close()
+            response
+        } else
+            chain.proceed(request)
     }
 
     private fun stringifyRequestBody(request: Request): String? {
@@ -135,7 +144,7 @@ class RequestLoggingInterceptor(val context: Context) : Interceptor {
         notificationChannel.enableVibration(true)
         notificationManager.createNotificationChannel(notificationChannel)
 
-        val  builder = NotificationCompat.Builder(context, channelId)
+        val builder = NotificationCompat.Builder(context, channelId)
             .setContentTitle(method)
             .setContentText(url)
             .setContentIntent(contentIntent)

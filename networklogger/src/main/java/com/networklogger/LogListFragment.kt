@@ -2,11 +2,8 @@ package com.networklogger
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.View
-import android.view.ViewGroup
+import android.util.Log
+import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
@@ -14,6 +11,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
@@ -24,6 +22,9 @@ import kotlinx.coroutines.launch
 import java.io.BufferedReader
 import java.io.File
 import java.io.FileReader
+import java.nio.file.Files
+import java.nio.file.attribute.BasicFileAttributes
+import java.util.Calendar
 
 
 class LogListFragment : Fragment() {
@@ -47,6 +48,7 @@ class LogListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         view.apply {
+            checkAndDelete()
             (requireActivity() as AppCompatActivity).setSupportActionBar(binding.toolbar)
             CoroutineScope(Dispatchers.IO).launch {
 
@@ -124,6 +126,8 @@ class LogListFragment : Fragment() {
                     }
                 }
                 deleteDialog.show()
+            } else if (it.itemId == R.id.settings_menu) {
+                startActivity(Intent(requireActivity(),ConfigurationEditorActivity::class.java))
             }
             return@setOnMenuItemClickListener false
         }
@@ -153,6 +157,33 @@ class LogListFragment : Fragment() {
             return jsonData
         } catch (ex: Exception) {
             return LogDataModel(emptyList())
+        }
+    }
+
+    private fun checkAndDelete(){
+        val prefs = PreferenceManager.getDefaultSharedPreferences(requireActivity())
+        val file = File(
+            (requireContext().getExternalFilesDir("")?.absolutePath
+                ?: "") + "/network_logs"
+        )
+
+        val createdAt: Long = file.lastModified()
+        val periodSeconds: Long = (Calendar.getInstance().timeInMillis - createdAt) / 1000
+        val elapsedDays = periodSeconds / 60 / 60 / 24
+
+        if(prefs.getString("clean_period_list","")?.equals("three_day") == true && elapsedDays >=3){
+            file.delete()
+        }else if(prefs.getString("clean_period_list","")?.equals("two_day") == true && elapsedDays >=2){
+            file.delete()
+        }else if(prefs.getString("clean_period_list","")?.equals("one_day") == true && elapsedDays >=1){
+            file.delete()
+        } else if (prefs.getString("clean_period_list", "")
+                ?.equals("") == true
+        ) {
+            file.delete()
+        }
+        else{
+            Log.i("","Ignore")
         }
     }
 

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <DropDownPreference
+        android:key="clean_period_list"
+        android:summary=""
+        android:title="Suppress API endpoint"
+        app:entries="@array/dat_clean_period_keys"
+        app:entryValues="@array/dat_clean_period_values" />
+
+    <EditTextPreference
+        android:dialogLayout="@layout/preference_edit_text"
+        android:dialogTitle="Enter Periodic Pin expiry days"
+        app:defaultValue="90"
+        app:key="endPoints"
+        app:title="Tap to enter Periodic Pin expiry days" />
+
+</androidx.preference.PreferenceScreen>

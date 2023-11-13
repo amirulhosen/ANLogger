@@ -27,4 +27,12 @@
         tools:layout="@layout/custom_log_detail_view_dialog">
 
     </fragment>
+
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.networklogger.SettingsPageFragment"
+        android:label="fragment_intro"
+        tools:layout="@layout/custom_log_detail_view_dialog">
+
+    </fragment>
 </navigation>
