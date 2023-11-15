@@ -14,6 +14,7 @@ import androidx.navigation.findNavController
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.room.Room
 import com.google.gson.Gson
 import com.networklogger.databinding.CustomLogListFragmentBinding
 import kotlinx.coroutines.CoroutineScope
@@ -22,9 +23,7 @@ import kotlinx.coroutines.launch
 import java.io.BufferedReader
 import java.io.File
 import java.io.FileReader
-import java.nio.file.Files
-import java.nio.file.attribute.BasicFileAttributes
-import java.util.Calendar
+import java.util.*
 
 
 class LogListFragment : Fragment() {
@@ -52,7 +51,7 @@ class LogListFragment : Fragment() {
             (requireActivity() as AppCompatActivity).setSupportActionBar(binding.toolbar)
             CoroutineScope(Dispatchers.IO).launch {
 
-                jsonObject = loadDataFromFile()
+                jsonObject = loadDataFromDb()
                 CoroutineScope(Dispatchers.Main).launch {
                     if (jsonObject.logs.isEmpty()) {
                         binding.emptyImageView.visibility = View.VISIBLE
@@ -127,7 +126,7 @@ class LogListFragment : Fragment() {
                 }
                 deleteDialog.show()
             } else if (it.itemId == R.id.settings_menu) {
-                startActivity(Intent(requireActivity(),ConfigurationEditorActivity::class.java))
+                startActivity(Intent(requireActivity(), ConfigurationEditorActivity::class.java))
             }
             return@setOnMenuItemClickListener false
         }
@@ -138,6 +137,36 @@ class LogListFragment : Fragment() {
         super.onCreateOptionsMenu(menu, inflater)
     }
 
+
+    private suspend fun loadDataFromDb(): LogDataModel {
+        val db = Room.databaseBuilder(
+            requireContext(),
+            AppDatabase::class.java, "networkLogger"
+
+        ).build()
+
+        val data = db.personDao()?.getAll()
+        val listData = data?.map {
+            LogDataModel.Log(
+                requestBody = it.request_body.orEmpty(),
+                requestHeader = it.request_header.orEmpty(),
+                requestMethod = it.request_method.orEmpty(),
+                responseBody = it.response_body.orEmpty(),
+                responseHeader = it.response_header.orEmpty(),
+                url = it.url.orEmpty(),
+                request_time = it.request_time.orEmpty(),
+                statusCode = it.status_code.orEmpty(),
+                response_time = it.response_time.orEmpty(),
+                protocol = it.protocol.orEmpty(),
+                is_ssl = it.is_ssl.orEmpty(),
+                resquest_size = it.resquest_size.orEmpty(),
+                response_size = it.response_size.orEmpty(),
+                tls_version = "",
+                cipher_suite = it.cipher_suite.orEmpty()
+            )
+        } ?: listOf()
+        return LogDataModel(listData)
+    }
 
     private suspend fun loadDataFromFile(): LogDataModel {
         try {
@@ -160,7 +189,7 @@ class LogListFragment : Fragment() {
         }
     }
 
-    private fun checkAndDelete(){
+    private fun checkAndDelete() {
         val prefs = PreferenceManager.getDefaultSharedPreferences(requireActivity())
         val file = File(
             (requireContext().getExternalFilesDir("")?.absolutePath
@@ -171,20 +200,25 @@ class LogListFragment : Fragment() {
         val periodSeconds: Long = (Calendar.getInstance().timeInMillis - createdAt) / 1000
         val elapsedDays = periodSeconds / 60 / 60 / 24
 
-        if(prefs.getString("clean_period_list","")?.equals("three_day") == true && elapsedDays >=3){
-            file.delete()
-        }else if(prefs.getString("clean_period_list","")?.equals("two_day") == true && elapsedDays >=2){
-            file.delete()
-        }else if(prefs.getString("clean_period_list","")?.equals("one_day") == true && elapsedDays >=1){
-            file.delete()
-        } else if (prefs.getString("clean_period_list", "")
-                ?.equals("") == true
-        ) {
-            file.delete()
-        }
-        else{
-            Log.i("","Ignore")
-        }
+//        if (prefs.getString("clean_period_list", "")
+//                ?.equals("three_day") == true && elapsedDays >= 3
+//        ) {
+//            file.delete()
+//        } else if (prefs.getString("clean_period_list", "")
+//                ?.equals("two_day") == true && elapsedDays >= 2
+//        ) {
+//            file.delete()
+//        } else if (prefs.getString("clean_period_list", "")
+//                ?.equals("one_day") == true && elapsedDays >= 1
+//        ) {
+//            file.delete()
+//        } else if (prefs.getString("clean_period_list", "")
+//                ?.equals("") == true
+//        ) {
+//            file.delete()
+//        } else {
+//            Log.i("", "Ignore")
+//        }
     }
 
 }

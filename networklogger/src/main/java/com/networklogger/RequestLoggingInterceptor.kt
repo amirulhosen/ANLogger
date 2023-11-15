@@ -9,6 +9,8 @@ import android.graphics.BitmapFactory
 import android.graphics.Color
 import androidx.core.app.NotificationCompat
 import androidx.preference.PreferenceManager
+import androidx.room.Room
+import com.google.gson.Gson
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
@@ -22,7 +24,7 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 
 
-class RequestLoggingInterceptor(val context: Context) : Interceptor {
+class RequestLoggingInterceptor(val context: Context, val useSqlite:Boolean) : Interceptor {
     private lateinit var jsonObject1: JSONObject
     override fun intercept(chain: Interceptor.Chain): Response {
         val request: Request = chain.request()
@@ -32,69 +34,123 @@ class RequestLoggingInterceptor(val context: Context) : Interceptor {
             null
         )
         return if (!request.url.pathSegments.contains(overriddenBaseUrl)) {
-            val jsonObject = JSONObject().apply {
-                put("url", request.url)
-                put("request_header", request.headers)
-                put("request_body", stringifyRequestBody(request))
-                put("request_method", request.method)
-                put("request_method", request.headers)
-            }
+            if(!useSqlite) {
+                val jsonObject = JSONObject().apply {
+                    put("url", request.url)
+                    put("request_header", request.headers)
+                    put("request_body", stringifyRequestBody(request))
+                    put("request_method", request.method)
+                }
 
 
-            var response = chain.proceed(request)
-            val responseBody = response.body
-            if (responseBody != null) {
-                val responseBodyString = responseBody.string()
-                response = response.newBuilder()
-                    .body(
-                        ResponseBody.create(
-                            responseBody.contentType(),
-                            responseBodyString.toByteArray()
+                var response = chain.proceed(request)
+                val responseBody = response.body
+                if (responseBody != null) {
+                    val responseBodyString = responseBody.string()
+                    response = response.newBuilder()
+                        .body(
+                            ResponseBody.create(
+                                responseBody.contentType(),
+                                responseBodyString.toByteArray()
+                            )
                         )
-                    )
-                    .build()
+                        .build()
 
-                val dateFormat: DateFormat = SimpleDateFormat("HH:mm:ss")
-                val requestFormatted: String = dateFormat.format(response.sentRequestAtMillis)
-                val responseFormatted: String = dateFormat.format(response.receivedResponseAtMillis)
+                    val dateFormat: DateFormat = SimpleDateFormat("HH:mm:ss")
+                    val requestFormatted: String = dateFormat.format(response.sentRequestAtMillis)
+                    val responseFormatted: String =
+                        dateFormat.format(response.receivedResponseAtMillis)
 
-                jsonObject.put("response_body", responseBodyString)
-                jsonObject.put("status_code", response.code)
-                jsonObject.put("request_time", requestFormatted)
-                jsonObject.put("response_time", responseFormatted)
-                jsonObject.put("protocol", response.protocol)
-                jsonObject.put("is_ssl", response.request.isHttps)
-                jsonObject.put("resquest_size", request.body?.contentLength())
-                jsonObject.put("response_size", response.body?.contentLength())
-                jsonObject.put("tls_version", response.handshake?.tlsVersion)
-                jsonObject.put("cipher_suite", response.handshake?.cipherSuite)
-                jsonObject.put("cipher_suite", response.handshake?.cipherSuite)
+                    jsonObject.put("response_body", responseBodyString)
+                    jsonObject.put("status_code", response.code)
+                    jsonObject.put("request_time", requestFormatted)
+                    jsonObject.put("response_time", responseFormatted)
+                    jsonObject.put("protocol", response.protocol)
+                    jsonObject.put("is_ssl", response.request.isHttps)
+                    jsonObject.put("resquest_size", request.body?.contentLength())
+                    jsonObject.put("response_size", response.body?.contentLength())
+                    jsonObject.put("tls_version", response.handshake?.tlsVersion)
+                    jsonObject.put("cipher_suite", response.handshake?.cipherSuite)
+                    jsonObject.put("cipher_suite", response.handshake?.cipherSuite)
+                }
+                jsonObject.put("response_header", response.headers)
+                showNotification(context, (response.code.toString() + request.url), request.method)
+                val file =
+                    File((context.getExternalFilesDir("")?.absolutePath ?: "") + "/network_logs")
+                val fileWriter = if (file.exists()) {
+                    val data = loadDataFromFile()
+                    val updatedJsonArray = data.getJSONArray("logs")
+                    updatedJsonArray.put(jsonObject)
+
+                    jsonObject1 = JSONObject()
+                    jsonObject1.put("logs", updatedJsonArray)
+
+                    FileWriter(file)
+                } else {
+                    val jsonArray = JSONArray()
+                    jsonArray.put(jsonObject)
+                    jsonObject1 = JSONObject()
+                    jsonObject1.put("logs", jsonArray)
+                    file.setLastModified(Calendar.getInstance().timeInMillis)
+                    FileWriter(file)
+                }
+
+                val bufferedWriter = BufferedWriter(fileWriter)
+                bufferedWriter.write(jsonObject1.toString())
+                bufferedWriter.close()
+                response
             }
-            jsonObject.put("response_header", response.headers)
-            showNotification(context, (response.code.toString() + request.url), request.method)
-            val file = File((context.getExternalFilesDir("")?.absolutePath ?: "") + "/network_logs")
-            val fileWriter = if (file.exists()) {
-                val data = loadDataFromFile()
-                val updatedJsonArray = data.getJSONArray("logs")
-                updatedJsonArray.put(jsonObject)
+            else{
 
-                jsonObject1 = JSONObject()
-                jsonObject1.put("logs", updatedJsonArray)
+                val db = Room.databaseBuilder(
+                    context,
+                    AppDatabase::class.java, "networkLogger"
 
-                FileWriter(file)
-            } else {
-                val jsonArray = JSONArray()
-                jsonArray.put(jsonObject)
-                jsonObject1 = JSONObject()
-                jsonObject1.put("logs", jsonArray)
-                file.setLastModified(Calendar.getInstance().timeInMillis)
-                FileWriter(file)
+                ).build()
+                val jsonObject = JSONObject().apply {
+                    put("url", request.url)
+                    put("request_header", request.headers)
+                    put("request_body", stringifyRequestBody(request))
+                    put("request_method", request.method)
+                }
+
+
+                var response = chain.proceed(request)
+                val responseBody = response.body
+                if (responseBody != null) {
+                    val responseBodyString = responseBody.string()
+                    response = response.newBuilder()
+                        .body(
+                            ResponseBody.create(
+                                responseBody.contentType(),
+                                responseBodyString.toByteArray()
+                            )
+                        )
+                        .build()
+
+                    val dateFormat: DateFormat = SimpleDateFormat("HH:mm:ss")
+                    val requestFormatted: String = dateFormat.format(response.sentRequestAtMillis)
+                    val responseFormatted: String =
+                        dateFormat.format(response.receivedResponseAtMillis)
+
+                    jsonObject.put("response_body", responseBodyString)
+                    jsonObject.put("status_code", response.code)
+                    jsonObject.put("request_time", requestFormatted)
+                    jsonObject.put("response_time", responseFormatted)
+                    jsonObject.put("protocol", response.protocol)
+                    jsonObject.put("is_ssl", response.request.isHttps)
+                    jsonObject.put("resquest_size", request.body?.contentLength())
+                    jsonObject.put("response_size", response.body?.contentLength())
+                    jsonObject.put("tls_version", response.handshake?.tlsVersion)
+                    jsonObject.put("cipher_suite", response.handshake?.cipherSuite)
+                    jsonObject.put("cipher_suite", response.handshake?.cipherSuite)
+                }
+                jsonObject.put("response_header", response.headers)
+                showNotification(context, (response.code.toString() + request.url), request.method)
+
+                db.personDao()?.insertAll(Gson().fromJson(jsonObject.toString(),ApiDataModelEntity::class.java))
+                response
             }
-
-            val bufferedWriter = BufferedWriter(fileWriter)
-            bufferedWriter.write(jsonObject1.toString())
-            bufferedWriter.close()
-            response
         } else
             chain.proceed(request)
     }
