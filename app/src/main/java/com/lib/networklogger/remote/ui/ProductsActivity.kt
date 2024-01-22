@@ -6,7 +6,7 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.lib.networklogger.R
-import com.networklogger.NetworkLoggerActivity
+import com.logger.networklogger.ui.list.NetworkLoggerActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ProductsActivity : AppCompatActivity() {

@@ -17,7 +17,7 @@ class ProductsViewModel(
     // Transformations
 
     private val getOperatingAccountResult: LiveData<cleanarch.Result<SampleResponse>> =
-        Transformations.switchMap(productListRequest) {
+        productListRequest.switchMap {
             getProductsUseCase.execute().asLiveData()
         }
 

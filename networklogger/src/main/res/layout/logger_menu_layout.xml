@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/purple_200"
+        app:navigationIcon="@drawable/back"
+        app:title="Logger"
+        app:titleTextColor="@color/white" />
+
+    <Button
+        android:id="@+id/apiLoggerButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/green"
+        android:text="API Logger"
+        android:layout_marginTop="@dimen/space_l"
+        android:layout_marginHorizontal="@dimen/space_m"
+        android:layout_gravity="center"
+        android:textColor="@color/white"
+        android:textSize="20sp" />
+
+    <Button
+        android:id="@+id/timberLoggerButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_m"
+        android:layout_marginHorizontal="@dimen/space_m"
+        android:background="@color/green"
+        android:text="Timber Logger"
+        android:layout_gravity="center"
+        android:textColor="@color/white"
+        android:textSize="20sp" />
+
+</androidx.appcompat.widget.LinearLayoutCompat>

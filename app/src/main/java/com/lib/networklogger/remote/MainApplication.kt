@@ -5,6 +5,7 @@ import com.lib.networklogger.remote.di.repositoryModule
 import com.lib.networklogger.remote.di.serviceModule
 import com.lib.networklogger.remote.di.useCaseModule
 import com.lib.networklogger.remote.di.viewModelModule
+import com.logger.di.loggerModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 
@@ -22,7 +23,8 @@ class MainApplication:Application() {
                     serviceModule,
                     repositoryModule,
                     useCaseModule,
-                    viewModelModule
+                    viewModelModule,
+                    loggerModule
                 )
             )
         }

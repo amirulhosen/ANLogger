@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".NetworkLoggerActivity">
+    tools:context="com.logger.networklogger.ui.list.NetworkLoggerActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -21,10 +21,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/purple_200"
-        app:tabIconTint="@color/grey"
+        app:tabIconTint="@color/grey_40"
         app:tabIndicatorColor="@color/white"
         app:tabSelectedTextColor="@color/white"
-        app:tabTextColor="@color/grey" />
+        app:tabTextColor="@color/grey_40" />
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewPager"

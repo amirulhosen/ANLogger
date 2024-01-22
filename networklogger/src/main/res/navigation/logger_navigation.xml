@@ -1,13 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/logger_navigation"
-    app:startDestination="@id/logListFragment">
+    app:startDestination="@id/logMenuFragment">
+
+    <fragment
+        android:id="@+id/logMenuFragment"
+        android:name="com.logger.menu.LogMenuFragment"
+        android:label="fragment_intro"
+        tools:layout="@layout/custom_log_list_fragment">
+
+        <action
+            android:id="@+id/actionApiLogger"
+            app:destination="@+id/logListFragment"
+            app:enterAnim="@anim/logger_slide_in_right"
+            app:exitAnim="@anim/logger_slide_out_left"
+            app:popEnterAnim="@anim/logger_slide_in_left"
+            app:popExitAnim="@anim/logger_slide_out_right" />
+
+        <action
+            android:id="@+id/actionTimberLogger"
+            app:destination="@+id/timberLogListFragment"
+            app:enterAnim="@anim/logger_slide_in_right"
+            app:exitAnim="@anim/logger_slide_out_left"
+            app:popEnterAnim="@anim/logger_slide_in_left"
+            app:popExitAnim="@anim/logger_slide_out_right" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/timberLogListFragment"
+        android:name="com.logger.timberLogger.ui.list.TimberLogListFragment"
+        android:label="fragment_intro"
+        tools:layout="@layout/custom_log_list_fragment">
+
+        <action
+            android:id="@+id/actionTimberLogDetailsFragment"
+            app:destination="@+id/timberLogDetailsFragment"
+            app:enterAnim="@anim/logger_slide_in_right"
+            app:exitAnim="@anim/logger_slide_out_left"
+            app:popEnterAnim="@anim/logger_slide_in_left"
+            app:popExitAnim="@anim/logger_slide_out_right" />
+    </fragment>
 
     <fragment
         android:id="@+id/logListFragment"
-        android:name="com.networklogger.LogListFragment"
+        android:name="com.logger.networklogger.ui.list.LogListFragment"
         android:label="fragment_intro"
         tools:layout="@layout/custom_log_list_fragment">
 
@@ -22,7 +60,15 @@
 
     <fragment
         android:id="@+id/logDetailsFragment"
-        android:name="com.networklogger.LogDetailViewFragment"
+        android:name="com.logger.networklogger.ui.details.LogDetailViewFragment"
+        android:label="fragment_intro"
+        tools:layout="@layout/custom_log_detail_view_dialog">
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/timberLogDetailsFragment"
+        android:name="com.logger.timberLogger.ui.details.LogDetailViewFragment"
         android:label="fragment_intro"
         tools:layout="@layout/custom_log_detail_view_dialog">
 
@@ -30,7 +76,7 @@
 
     <fragment
         android:id="@+id/settingsFragment"
-        android:name="com.networklogger.SettingsPageFragment"
+        android:name="com.logger.networklogger.ui.settings.SettingsPageFragment"
         android:label="fragment_intro"
         tools:layout="@layout/custom_log_detail_view_dialog">
 
