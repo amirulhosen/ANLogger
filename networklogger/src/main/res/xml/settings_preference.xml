@@ -7,15 +7,9 @@
     <DropDownPreference
         android:key="clean_period_list"
         android:summary=""
-        android:title="Suppress API endpoint"
+        android:title="Cleanup memory interval"
         app:entries="@array/dat_clean_period_keys"
         app:entryValues="@array/dat_clean_period_values" />
 
-    <EditTextPreference
-        android:dialogLayout="@layout/preference_edit_text"
-        android:dialogTitle="Enter Periodic Pin expiry days"
-        app:defaultValue="90"
-        app:key="endPoints"
-        app:title="Tap to enter Periodic Pin expiry days" />
 
 </androidx.preference.PreferenceScreen>

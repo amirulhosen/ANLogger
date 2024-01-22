@@ -1,9 +1,9 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string-array name="dat_clean_period_keys">
         <item tools:ignore="Typos">Every launch</item>
-        <item>launch after 1 day</item>
-        <item>launch after  2 days</item>
-        <item>launch after  3 days</item>
+        <item>After 1 days of launch</item>
+        <item>After 2 days of launch</item>
+        <item>After 3 days of launch</item>
     </string-array>
     <string-array name="dat_clean_period_values">
         <item tools:ignore="Typos">every_launch</item>

@@ -5,11 +5,21 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <application>
         <activity
-            android:name="com.networklogger.NetworkLoggerActivity"
+            android:name="com.logger.networklogger.ui.list.NetworkLoggerActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name=".ConfigurationEditorActivity"
+            android:name="com.logger.networklogger.ui.settings.ConfigurationEditorActivity"
             android:screenOrientation="portrait" />
+
+        <service
+            android:name="com.logger.networklogger.ClearDatabaseService"
+            android:exported="false"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+
+        <provider android:authorities="${applicationId}.provider" android:exported="false" android:grantUriPermissions="true" android:name="androidx.core.content.FileProvider">
+            <meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/provider_paths" />
+        </provider>
+
     </application>
 </manifest>

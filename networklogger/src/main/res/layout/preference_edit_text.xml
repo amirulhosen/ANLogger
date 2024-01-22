@@ -11,7 +11,7 @@
         android:id="@android:id/edit"
         android:textColorHint="@color/black"
         android:textColor="@color/black"
-        android:hint="Suppress API endpoint">
+        android:hint="Cleanup log">
     </EditText>
 
 </FrameLayout>

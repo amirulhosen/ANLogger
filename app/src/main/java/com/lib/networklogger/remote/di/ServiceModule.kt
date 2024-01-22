@@ -3,7 +3,7 @@ package com.lib.networklogger.remote.di
 import android.content.Context
 import com.google.gson.GsonBuilder
 import com.lib.networklogger.remote.LibServiceApi
-import com.networklogger.RequestLoggingInterceptor
+import com.logger.networklogger.api.RequestLoggingInterceptor
 import okhttp3.JavaNetCookieJar
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -25,12 +25,12 @@ val serviceModule = module {
 }
 
 /* Returns a custom OkHttpClient instance with interceptor. Used for building Retrofit service */
-fun createHttpClient(context:Context): OkHttpClient {
+fun createHttpClient(context: Context): OkHttpClient {
     if (CookieHandler.getDefault() == null) CookieHandler.setDefault(java.net.CookieManager())
 
     val client = OkHttpClient.Builder()
     client.addInterceptor(ConnectivityInterceptor(context))
-    client.addInterceptor(RequestLoggingInterceptor(context))
+    client.addInterceptor(RequestLoggingInterceptor(context, true))
     val logging = HttpLoggingInterceptor()
     logging.setLevel(HttpLoggingInterceptor.Level.BODY)
     client.apply {
